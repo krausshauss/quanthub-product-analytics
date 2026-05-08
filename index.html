@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuantHub · Product Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/css/main.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="header-logo-mark">QH</div>
+      <div class="header-sep"></div>
+      <div>
+        <div class="header-title">Product Analytics</div>
+        <div class="header-sub">Revenue · Demand · Pipeline · <span id="header-year">2026</span></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-connecting" id="live-badge">● CONNECTING</span>
+      <select id="year-select" class="year-select" style="display:none"></select>
+      <button class="btn-refresh" onclick="window.App.refresh()" title="Refresh">↺</button>
+      <div class="last-refresh" id="last-refresh"></div>
+    </div>
+  </header>
+
+  <!-- KPI Bar -->
+  <div class="kpi-bar">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon-cw">$</div>
+      <div class="kpi-info">
+        <div class="kpi-label">CW Revenue YTD</div>
+        <div class="kpi-big" id="kpi-cw">—</div>
+        <div class="kpi-sub" id="kpi-cw-sub"></div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon-pipe">⇥</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Open Pipeline</div>
+        <div class="kpi-big" id="kpi-pipe">—</div>
+        <div class="kpi-sub" id="kpi-pipe-sub"></div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon-count">#</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Active Products</div>
+        <div class="kpi-big" id="kpi-products">—</div>
+        <div class="kpi-sub" id="kpi-products-sub"></div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon-top">★</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Top Product</div>
+        <div class="kpi-big kpi-big-sm" id="kpi-top">—</div>
+        <div class="kpi-sub" id="kpi-top-sub"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Note banner (hidden unless worker returns a note) -->
+  <div id="data-note" class="data-note" style="display:none"></div>
+
+  <!-- Main grid -->
+  <div class="main-grid">
+
+    <!-- LEFT: Product Performance Table -->
+    <section class="panel panel-table">
+      <div class="panel-header">
+        <span class="panel-title">▸ Product Performance</span>
+        <span class="info-tip" data-tip="All products found on HubSpot deals for the selected year. CW Revenue = closed won line item totals. Pipeline = open deal line item value. Win Rate = deals won ÷ total deals containing this product. Click column headers to sort.">?</span>
+      </div>
+      <div class="table-wrap">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th class="pt-th-sortable pt-name" data-key="name"          onclick="ProductTable.sortBy('name')">Product <span class="sort-arrow">↕</span></th>
+              <th class="pt-th-sortable pt-num"  data-key="totalDeals"    onclick="ProductTable.sortBy('totalDeals')">Deals <span class="sort-arrow">↕</span></th>
+              <th class="pt-th-sortable pt-num"  data-key="unitsSold"     onclick="ProductTable.sortBy('unitsSold')">Units <span class="sort-arrow">↕</span></th>
+              <th class="pt-th-sortable pt-num"  data-key="avgPrice"      onclick="ProductTable.sortBy('avgPrice')">Avg Price <span class="sort-arrow">↕</span></th>
+              <th class="pt-th-sortable pt-num pt-highlight" data-key="cwRevenue" onclick="ProductTable.sortBy('cwRevenue')">CW Revenue <span class="sort-arrow">↓</span></th>
+              <th class="pt-th-sortable pt-num pt-pipe" data-key="pipelineValue" onclick="ProductTable.sortBy('pipelineValue')">Pipeline <span class="sort-arrow">↕</span></th>
+              <th class="pt-th-sortable pt-num"  data-key="winRate"       onclick="ProductTable.sortBy('winRate')">Win Rate <span class="sort-arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="product-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- RIGHT col -->
+    <div class="right-col">
+
+      <!-- Pipeline by Product -->
+      <section class="panel panel-pipeline">
+        <div class="panel-header">
+          <span class="panel-title">Pipeline · by Product</span>
+          <span class="info-tip" data-tip="Top 8 products by combined CW + pipeline value. Blue = closed won revenue. Teal = open pipeline. Hover bars for exact values.">?</span>
+        </div>
+        <div id="pipeline-bars" class="pipeline-bars"></div>
+        <div class="pb-legend">
+          <span class="pb-legend-cw">■ Closed Won</span>
+          <span class="pb-legend-pipe">■ Pipeline</span>
+        </div>
+      </section>
+
+      <!-- Rep × Product -->
+      <section class="panel panel-reps">
+        <div class="panel-header">
+          <span class="panel-title">Rep · Product Breakdown</span>
+          <span class="info-tip" data-tip="Per-rep product revenue and pipeline. Bar width = share of that rep's total closed-won revenue. Shows top 5 products per rep.">?</span>
+        </div>
+        <div id="rep-matrix" class="rep-matrix"></div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    HubSpot → Cloudflare Worker (quanthub-products) · Data reflects line items on deals ·
+    <a href="mailto:support@quanthub.com">support</a>
+  </footer>
+
+</div>
+
+<script src="src/js/config.js"></script>
+<script src="src/js/hubspot.js"></script>
+<script src="src/js/components/productTable.js"></script>
+<script src="src/js/components/pipelineBar.js"></script>
+<script src="src/js/components/repMatrix.js"></script>
+<script src="src/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+name = "quanthub-products"
+main = "cloudflare-worker.js"
+compatibility_date = "2024-01-01"
+account_id = "20e7b178f91a4ca92328922dd22abdf2"
+
+# Secrets (set once via wrangler CLI — never stored here):
+#   npx wrangler secret put HUBSPOT_TOKEN
+#   npx wrangler secret put ALLOWED_ORIGIN
+
+[vars]
+ALLOWED_ORIGIN = "https://krausshauss.github.io"
+
+[env.dev]
+name = "quanthub-products-dev"
+
+[env.dev.vars]
+ALLOWED_ORIGIN = "https://krausshauss.github.io"
