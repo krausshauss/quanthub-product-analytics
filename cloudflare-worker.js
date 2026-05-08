@@ -103,7 +103,11 @@ async function buildProductSummary(env, year) {
 
   const allDeals = [...cwRes, ...openRes];
   if (!allDeals.length) {
-    return { products: [], repMatrix: [], totalCwRevenue: 0, totalPipeline: 0, totalProducts: 0 };
+    return {
+      products: [], repMatrix: [], totalCwRevenue: 0, totalPipeline: 0,
+      totalProducts: 0, totalDeals: 0,
+      coverage: { dealsWithProducts: 0, totalDeals: 0, pct: 0 },
+    };
   }
 
   // Build a lookup map: dealId → deal properties
@@ -114,19 +118,22 @@ async function buildProductSummary(env, year) {
   const dealIds = allDeals.map(d => d.id);
   const lineItemIdsByDeal = await batchGetAssociations(env, "deals", "line_items", dealIds);
 
-  // Collect unique line item IDs
-  const allLineItemIds = [...new Set(
-    Object.values(lineItemIdsByDeal).flat()
-  )];
+  // Coverage: how many deals have at least one line item attached
+  const dealsWithProducts = Object.values(lineItemIdsByDeal).filter(ids => ids.length > 0).length;
+  const coverage = {
+    dealsWithProducts,
+    totalDeals: allDeals.length,
+    pct: allDeals.length > 0 ? Math.round((dealsWithProducts / allDeals.length) * 100) : 0,
+  };
+
+  // Collect unique line item IDs — if none yet, return empty product list
+  // (expected when all deals are early-stage; not an error)
+  const allLineItemIds = [...new Set(Object.values(lineItemIdsByDeal).flat())];
 
   if (!allLineItemIds.length) {
     return {
-      products: [],
-      repMatrix: [],
-      totalCwRevenue: 0,
-      totalPipeline: 0,
-      totalProducts: 0,
-      note: "No line items found on deals. Add products to deals in HubSpot to see analytics.",
+      products: [], repMatrix: [], totalCwRevenue: 0, totalPipeline: 0,
+      totalProducts: 0, totalDeals: allDeals.length, coverage,
     };
   }
 
@@ -259,6 +266,7 @@ async function buildProductSummary(env, year) {
     totalPipeline,
     totalProducts:    products.length,
     totalDeals:       allDeals.length,
+    coverage,
     generatedAt:      new Date().toISOString(),
   };
 }

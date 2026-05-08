@@ -66,8 +66,12 @@
     </div>
   </div>
 
-  <!-- Note banner (hidden unless worker returns a note) -->
-  <div id="data-note" class="data-note" style="display:none"></div>
+  <!-- Coverage bar — shows quoted deal coverage across pipeline -->
+  <div id="coverage-bar" class="coverage-bar" style="display:none">
+    <span id="coverage-text"></span>
+    <div class="coverage-track"><div class="coverage-fill" id="coverage-fill"></div></div>
+    <span id="coverage-pct" class="coverage-pct"></span>
+  </div>
 
   <!-- Main grid -->
   <div class="main-grid">

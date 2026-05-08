@@ -39,7 +39,7 @@ window.ProductTable = (() => {
       });
 
     if (!sorted.length) {
-      el.innerHTML = `<tr><td colspan="${COLS.length}" class="pt-empty">No product data found. Add line items to deals in HubSpot to see analytics here.</td></tr>`;
+      el.innerHTML = `<tr><td colspan="${COLS.length}" class="pt-empty">No quoted deals found yet for ${new Date().getFullYear()}. Product analytics populate automatically once deals reach the quote stage with line items.</td></tr>`;
       return;
     }
 

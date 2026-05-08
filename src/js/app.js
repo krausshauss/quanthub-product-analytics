@@ -31,15 +31,10 @@ window.App = (() => {
 
   function renderAll(data) {
     updateKPIs(data);
+    updateCoverage(data.coverage);
     window.ProductTable.render(data.products || []);
     window.PipelineBar.render(data.products || []);
     window.RepMatrix.render(data.repMatrix || []);
-
-    const note = document.getElementById("data-note");
-    if (note && data.note) {
-      note.textContent = data.note;
-      note.style.display = "block";
-    }
   }
 
   function showLoading() {
@@ -55,15 +50,32 @@ window.App = (() => {
     setEl("kpi-cw",       fmt(data.totalCwRevenue));
     setEl("kpi-cw-sub",   `across ${data.totalProducts} product${data.totalProducts !== 1 ? "s" : ""}`);
     setEl("kpi-pipe",     fmt(data.totalPipeline));
-    setEl("kpi-pipe-sub", `${data.totalDeals} deals in pipeline`);
+    setEl("kpi-pipe-sub", `${data.totalDeals} total deals tracked`);
     setEl("kpi-products", data.totalProducts);
-    setEl("kpi-products-sub", `tracked in ${_year}`);
+    setEl("kpi-products-sub", `with quotes in ${_year}`);
 
     const top = data.products?.[0];
     if (top) {
       setEl("kpi-top",     truncate(top.name, 22));
       setEl("kpi-top-sub", `${fmt(top.cwRevenue)} CW · ${fmt(top.pipelineValue)} pipeline`);
     }
+  }
+
+  function updateCoverage(cov) {
+    if (!cov) return;
+    const bar  = document.getElementById("coverage-bar");
+    const text = document.getElementById("coverage-text");
+    const fill = document.getElementById("coverage-fill");
+    const pct  = document.getElementById("coverage-pct");
+    if (!bar) return;
+
+    bar.style.display = "flex";
+    const without = cov.totalDeals - cov.dealsWithProducts;
+    text.textContent = `Quote coverage: ${cov.dealsWithProducts} of ${cov.totalDeals} deals have products attached`;
+    if (without > 0) text.textContent += ` · ${without} early-stage deal${without !== 1 ? "s" : ""} not yet quoted`;
+    fill.style.width  = `${cov.pct}%`;
+    fill.style.background = cov.pct >= 80 ? "#22C55E" : cov.pct >= 50 ? "#F59E0B" : "#0077B5";
+    pct.textContent   = `${cov.pct}%`;
   }
 
   function setupYearSelector() {
