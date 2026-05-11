@@ -38,7 +38,7 @@
   --shadow-sm: 0 1px 3px rgba(0,0,0,.07);
   --shadow-md: 0 4px 12px rgba(0,119,181,.10);
 
-  --header-h:  96px;
+  --header-h:  108px;
 }
 
 html, body {
@@ -72,7 +72,7 @@ html, body {
 }
 
 .header-brand { display: inline-flex; align-items: center; text-decoration: none; flex-shrink: 0; }
-.header-logo  { height: 36px; width: auto; display: block; }
+.header-logo  { height: 72px; width: auto; display: block; }
 
 .header-right {
   display: flex; flex-direction: column; align-items: flex-end;
