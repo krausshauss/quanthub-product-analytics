@@ -18,7 +18,10 @@ window.RepMatrix = (() => {
     const el = document.getElementById("rep-matrix");
     if (!el) return;
 
-    if (!repMatrix || !repMatrix.length) {
+    // Only render known reps — drops "Other" / unmapped owners.
+    repMatrix = (repMatrix || []).filter(r => r.rep in REP_COLORS);
+
+    if (!repMatrix.length) {
       el.innerHTML = `<div class="rm-empty">No rep data available.</div>`;
       return;
     }

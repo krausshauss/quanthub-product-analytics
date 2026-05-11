@@ -220,6 +220,7 @@ async function buildProductSummary(env, year) {
           repMatrix[repName][productName] = { cwRevenue: 0, pipelineValue: 0, count: 0 };
         }
         repMatrix[repName][productName].pipelineValue += amount;
+        repMatrix[repName][productName].count         += 1;
       }
 
       // Track unique deals
