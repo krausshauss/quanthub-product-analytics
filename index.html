@@ -14,19 +14,24 @@
 
   <!-- Header -->
   <header class="header">
-    <div class="header-left">
-      <div class="header-logo-mark">QH</div>
-      <div class="header-sep"></div>
-      <div>
-        <div class="header-title">Product Analytics</div>
-        <div class="header-sub">Revenue · Demand · Pipeline · <span id="header-year">2026</span></div>
-      </div>
-    </div>
+    <a class="header-brand" href="/" aria-label="QuantHub">
+      <img src="src/assets/qh-website-logo-2.svg" alt="QuantHub" class="header-logo" />
+    </a>
     <div class="header-right">
-      <span class="badge badge-connecting" id="live-badge">● CONNECTING</span>
-      <select id="year-select" class="year-select" style="display:none"></select>
-      <button class="btn-refresh" onclick="window.App.refresh()" title="Refresh">↺</button>
-      <div class="last-refresh" id="last-refresh"></div>
+      <div class="header-meta">
+        <div class="header-meta-line">
+          <span class="header-section">Product Analytics</span>
+          <span class="header-sep-dot">·</span>
+          <span class="header-category">Revenue Operations</span>
+          <span class="header-version">v1.0 · <span id="header-year">2026</span></span>
+        </div>
+        <div class="header-sub-line" id="last-refresh">Last sync: —</div>
+      </div>
+      <div class="header-controls">
+        <span class="badge badge-connecting" id="live-badge">● CONNECTING</span>
+        <select id="year-select" class="year-select" style="display:none"></select>
+        <button class="btn-refresh" onclick="window.App.refresh()" title="Refresh">↺</button>
+      </div>
     </div>
   </header>
 

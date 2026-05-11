@@ -111,7 +111,11 @@ window.App = (() => {
 
   function setRefresh() {
     const el = document.getElementById("last-refresh");
-    if (el) el.textContent = `Updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    if (!el) return;
+    const now  = new Date();
+    const date = now.toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+    const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    el.textContent = `Last sync: ${date} · ${time}`;
   }
 
   function setEl(id, val) {
