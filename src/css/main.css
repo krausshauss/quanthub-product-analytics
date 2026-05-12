@@ -246,9 +246,14 @@ html, body {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
   gap: 1px; background: var(--border);
-  align-items: start;
+  align-items: stretch;
 }
 .right-col { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+
+/* Left column (product table) stretches to match the right column height
+   so pagination capacity adapts to the rep-matrix panel below. */
+.panel-table { display: flex; flex-direction: column; min-height: 0; }
+.panel-table .table-wrap { flex: 1; overflow: hidden; min-height: 0; }
 
 /* ── Panels ───────────────────────────────────────────────────────── */
 .panel {
@@ -345,6 +350,31 @@ html, body {
 }
 .pt-bar-bg { height: 3px; border-radius: 2px; background: var(--bg-base); overflow: hidden; max-width: 200px; }
 .pt-bar-fill { height: 100%; border-radius: 2px; background: var(--brand); transition: width .6s ease; }
+
+/* Pagination footer */
+.table-pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 8px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+  font-size: 11px; color: var(--text-hint);
+  min-height: 36px;
+}
+.table-pagination:empty { display: none; }
+.tp-info  { font-family: var(--font-mono); }
+.tp-pager { display: inline-flex; align-items: center; gap: 4px; }
+.tp-btn {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  color: var(--text-sec); border-radius: var(--radius-sm);
+  padding: 3px 9px; cursor: pointer; font-size: 11px;
+  font-family: var(--font-ui); transition: all .15s;
+}
+.tp-btn:hover:not(:disabled) { background: var(--brand-dim); color: var(--brand); border-color: var(--brand-border); }
+.tp-btn:disabled { opacity: .4; cursor: default; }
+.tp-page {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  color: var(--text-sec); padding: 0 6px; min-width: 56px; text-align: center;
+}
 
 /* ── Pipeline Bars ────────────────────────────────────────────────── */
 .pipeline-bars { padding: 12px 20px; }
