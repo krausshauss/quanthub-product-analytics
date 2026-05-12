@@ -126,7 +126,7 @@ html, body {
 /* ── KPI Bar ──────────────────────────────────────────────────────── */
 .kpi-bar {
   grid-area: kpi;
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(8, 1fr);
   gap: 1px; background: var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -135,6 +135,67 @@ html, body {
   padding: 16px 20px;
   display: flex; align-items: center; gap: 14px;
 }
+
+/* Gauge variant: compact vertical stack centered in card */
+.kpi-card.kpi-gauge {
+  flex-direction: column; align-items: center; justify-content: flex-start;
+  gap: 4px; padding: 12px 12px 14px;
+  text-align: center;
+}
+.kpi-gauge .kpi-label {
+  font-size: 10px; font-weight: 700; color: var(--text-hint);
+  text-transform: uppercase; letter-spacing: .07em;
+  white-space: nowrap;
+}
+.kpi-gauge .kpi-sub {
+  font-size: 10px; color: var(--text-hint);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+
+.gauge { width: 100%; max-width: 110px; height: auto; display: block; }
+.gauge-track {
+  fill: none; stroke: var(--border); stroke-width: 8; stroke-linecap: round;
+}
+.gauge-fill {
+  fill: none; stroke: var(--brand); stroke-width: 8; stroke-linecap: round;
+  stroke-dasharray: 125.66;
+  stroke-dashoffset: 125.66;
+  transition: stroke-dashoffset .8s cubic-bezier(.22,.61,.36,1), stroke .3s;
+}
+.gauge-fill-recurring { stroke: var(--teal); }
+.gauge-fill-coverage  { stroke: var(--accent); }
+
+.gauge-value {
+  font-family: var(--font-mono); font-size: 18px; font-weight: 800;
+  color: var(--text-primary); line-height: 1; margin-top: -8px;
+}
+
+/* Velocity (acceleration) widget */
+.velocity-wrap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 62px; gap: 2px;
+}
+.velocity-arrow {
+  font-size: 26px; font-weight: 800; line-height: 1;
+  color: var(--text-hint); transition: color .3s, transform .3s;
+}
+.velocity-pct {
+  font-family: var(--font-mono); font-size: 18px; font-weight: 800;
+  color: var(--text-primary); line-height: 1;
+}
+.velocity-up      .velocity-arrow { color: var(--green);  transform: translateY(-1px); }
+.velocity-up      .velocity-pct   { color: var(--green); }
+.velocity-down    .velocity-arrow { color: var(--red); }
+.velocity-down    .velocity-pct   { color: var(--red); }
+.velocity-flat    .velocity-arrow { color: var(--text-hint); }
+
+/* Gauge state colors override base fill */
+.gauge-good    .gauge-fill { stroke: var(--green); }
+.gauge-warn    .gauge-fill { stroke: #B45309; }
+.gauge-bad     .gauge-fill { stroke: var(--red); }
+.gauge-good    .gauge-value { color: var(--green); }
+.gauge-warn    .gauge-value { color: #B45309; }
+.gauge-bad     .gauge-value { color: var(--red); }
 .kpi-icon {
   width: 42px; height: 42px; border-radius: var(--radius-md); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -373,6 +434,9 @@ html, body {
 .footer a { color: var(--brand); text-decoration: none; }
 
 /* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 1400px) {
+  .kpi-bar { grid-template-columns: repeat(4, 1fr); }
+}
 @media (max-width: 960px) {
   .main-grid { grid-template-columns: 1fr; }
   .kpi-bar   { grid-template-columns: 1fr 1fr; }

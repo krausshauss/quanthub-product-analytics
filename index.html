@@ -69,6 +69,46 @@
         <div class="kpi-sub" id="kpi-top-sub"></div>
       </div>
     </div>
+
+    <!-- Gauge KPIs -->
+    <div class="kpi-card kpi-gauge">
+      <div class="kpi-label">Quota Attainment</div>
+      <svg class="gauge gauge-radial" viewBox="0 0 100 62" aria-hidden="true">
+        <path class="gauge-track" d="M 10 55 A 40 40 0 0 1 90 55" />
+        <path class="gauge-fill"  d="M 10 55 A 40 40 0 0 1 90 55" id="gauge-quota-arc" />
+      </svg>
+      <div class="gauge-value" id="gauge-quota-val">—</div>
+      <div class="kpi-sub" id="gauge-quota-sub"></div>
+    </div>
+
+    <div class="kpi-card kpi-gauge">
+      <div class="kpi-label">QoQ Velocity</div>
+      <div class="velocity-wrap" id="velocity-wrap">
+        <div class="velocity-arrow" id="velocity-arrow">–</div>
+        <div class="velocity-pct"   id="velocity-pct">—</div>
+      </div>
+      <div class="kpi-sub" id="velocity-sub"></div>
+    </div>
+
+    <div class="kpi-card kpi-gauge">
+      <div class="kpi-label">Recurring Mix</div>
+      <svg class="gauge gauge-radial" viewBox="0 0 100 62" aria-hidden="true">
+        <path class="gauge-track" d="M 10 55 A 40 40 0 0 1 90 55" />
+        <path class="gauge-fill gauge-fill-recurring" d="M 10 55 A 40 40 0 0 1 90 55" id="gauge-recurring-arc" />
+      </svg>
+      <div class="gauge-value" id="gauge-recurring-val">—</div>
+      <div class="kpi-sub" id="gauge-recurring-sub"></div>
+    </div>
+
+    <div class="kpi-card kpi-gauge">
+      <div class="kpi-label">Pipeline Coverage</div>
+      <svg class="gauge gauge-radial" viewBox="0 0 100 62" aria-hidden="true">
+        <path class="gauge-track" d="M 10 55 A 40 40 0 0 1 90 55" />
+        <path class="gauge-fill gauge-fill-coverage" d="M 10 55 A 40 40 0 0 1 90 55" id="gauge-coverage-arc" />
+      </svg>
+      <div class="gauge-value" id="gauge-coverage-val">—</div>
+      <div class="kpi-sub" id="gauge-coverage-sub"></div>
+    </div>
   </div>
 
   <!-- Coverage bar — shows quoted deal coverage across pipeline -->
