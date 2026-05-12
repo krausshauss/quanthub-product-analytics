@@ -156,6 +156,21 @@ async function buildProductSummary(env, year) {
     "hs_recurring_billing_period", "description",
   ]);
 
+  // Step 3b: Resolve canonical Product Library names for line items that
+  // reference a library product. Line items without hs_product_id fall back
+  // to their free-text name (older pre-March deals that pre-date the catalog
+  // mandate).
+  const libraryProductIds = [...new Set(
+    lineItems.map(li => li.properties.hs_product_id).filter(id => id)
+  )];
+  const libraryNames = {};
+  if (libraryProductIds.length) {
+    const products = await batchReadObjects(env, "products", libraryProductIds, ["name"]);
+    products.forEach(p => {
+      if (p.properties?.name) libraryNames[p.id] = p.properties.name;
+    });
+  }
+
   // Build a reverse map: lineItemId → dealId(s)
   const lineItemToDeal = {};
   Object.entries(lineItemIdsByDeal).forEach(([dealId, liIds]) => {
@@ -170,7 +185,10 @@ async function buildProductSummary(env, year) {
   const repMatrix  = {};   // repName → { productName → { cwRevenue, pipelineValue, count } }
 
   lineItems.forEach(li => {
-    const productName = li.properties.name || "Unknown Product";
+    const libId       = li.properties.hs_product_id;
+    const productName = (libId && libraryNames[libId])
+      || li.properties.name
+      || "Unknown Product";
     const amount      = parseFloat(li.properties.amount) || 0;
     const quantity    = parseFloat(li.properties.quantity) || 1;
     const price       = parseFloat(li.properties.price) || 0;
