@@ -84,24 +84,37 @@ export default {
   }
 };
 
+// Scope: only Higher Education pipeline, excluding specific owners.
+const HE_PIPELINE_ID       = "753473109";
+const EXCLUDED_OWNER_NAMES = ["Josh Jones", "Nate Spargo"];
+
 // ── Core analytics builder ────────────────────────────────────────────────────
 async function buildProductSummary(env, year) {
   const yearStart = `${year}-01-01T00:00:00.000Z`;
+
+  // Resolve excluded owner IDs by name (one tiny API call per request).
+  const excludedOwnerIds = await resolveOwnerIdsByName(env, EXCLUDED_OWNER_NAMES);
+
+  const pipelineFilter = { propertyName: "pipeline", operator: "EQ", value: HE_PIPELINE_ID };
 
   // Step 1: Fetch all relevant deals in parallel
   //   a) Closed Won in the target year
   //   b) All open (pipeline) deals regardless of year
   const [cwRes, openRes] = await Promise.all([
     fetchDeals(env, [
+      pipelineFilter,
       { propertyName: "hs_is_closed_won",   operator: "EQ",  value: "true" },
       { propertyName: "closedate",           operator: "GTE", value: yearStart },
     ]),
     fetchDeals(env, [
+      pipelineFilter,
       { propertyName: "hs_is_closed",        operator: "EQ",  value: "false" },
     ]),
   ]);
 
-  const allDeals = [...cwRes, ...openRes];
+  const allDeals = [...cwRes, ...openRes].filter(d =>
+    !excludedOwnerIds.has(String(d.properties.hubspot_owner_id || ""))
+  );
   if (!allDeals.length) {
     return {
       products: [], repMatrix: [], totalCwRevenue: 0, totalPipeline: 0,
@@ -370,6 +383,38 @@ async function hsPost(env, endpoint, body) {
     throw new Error(`HubSpot ${endpoint}: ${res.status} — ${txt}`);
   }
   return res.json();
+}
+
+async function hsGet(env, endpoint) {
+  const res = await fetch(`https://api.hubapi.com${endpoint}`, {
+    method:  "GET",
+    headers: { "Authorization": `Bearer ${env.HUBSPOT_TOKEN}` },
+  });
+  if (!res.ok) {
+    const txt = await res.text().catch(() => res.statusText);
+    throw new Error(`HubSpot ${endpoint}: ${res.status} — ${txt}`);
+  }
+  return res.json();
+}
+
+async function resolveOwnerIdsByName(env, names) {
+  const wanted = new Set(names.map(n => n.toLowerCase().trim()));
+  const ids    = new Set();
+  let after = undefined;
+  do {
+    const qs   = after ? `?limit=100&after=${encodeURIComponent(after)}` : `?limit=100`;
+    const page = await hsGet(env, `/crm/v3/owners${qs}`);
+    (page.results || []).forEach(o => {
+      const full = `${o.firstName || ""} ${o.lastName || ""}`.toLowerCase().trim();
+      if (wanted.has(full)) ids.add(String(o.id));
+    });
+    after = page.paging?.next?.after;
+  } while (after && ids.size < wanted.size);
+
+  if (ids.size < wanted.size) {
+    console.warn(`[Worker] Owner lookup: matched ${ids.size}/${wanted.size} of ${[...wanted].join(", ")}`);
+  }
+  return ids;
 }
 
 function json(data, status = 200, headers = {}) {
