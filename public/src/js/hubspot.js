@@ -9,6 +9,10 @@ window.HubSpot = (() => {
     const res = await fetch(`${BASE()}${path}`, {
       headers: { "Content-Type": "application/json" },
     });
+    if (res.status === 401) {
+      window.location.href = "/login";
+      throw new Error("Session expired");
+    }
     if (!res.ok) {
       const err = await res.text().catch(() => res.statusText);
       throw new Error(`${path}: ${res.status} — ${err}`);

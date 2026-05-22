@@ -3,15 +3,28 @@ main = "cloudflare-worker.js"
 compatibility_date = "2024-01-01"
 account_id = "20e7b178f91a4ca92328922dd22abdf2"
 
-# Secrets (set once via wrangler CLI — never stored here):
-#   npx wrangler secret put HUBSPOT_TOKEN
-#   npx wrangler secret put ALLOWED_ORIGIN
+# Static assets (HTML, CSS, JS) served by the worker after auth check.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "404-page"
 
-[vars]
-ALLOWED_ORIGIN = "https://krausshauss.github.io"
+# Note: the gated entry page (index.html) is imported into the worker as text
+# (wrangler's default module rules treat *.html as Text) and served only after
+# auth — see `import INDEX_HTML` in cloudflare-worker.js.
+
+# Secrets (set once via wrangler CLI — never stored here):
+#   npx wrangler secret put HUBSPOT_TOKEN     # HubSpot Private App token
+#   npx wrangler secret put PORTAL_PASSWORD   # password used to log into the portal
+#   npx wrangler secret put SESSION_SECRET    # long random string for HMAC-signing session cookies
+#
+# For the dev environment, append `--env dev` to each:
+#   npx wrangler secret put PORTAL_PASSWORD --env dev
 
 [env.dev]
 name = "quanthub-products-dev"
 
-[env.dev.vars]
-ALLOWED_ORIGIN = "https://krausshauss.github.io"
+[env.dev.assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "404-page"

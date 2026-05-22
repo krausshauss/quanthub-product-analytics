@@ -1,5 +1,5 @@
 window.CONFIG = {
-  WORKER_URL: "https://quanthub-products-dev.michael-20e.workers.dev",
+  WORKER_URL: "",
   YEAR:       new Date().getFullYear().toString(),
   ANNUAL_QUOTA: 1_000_000,
 
