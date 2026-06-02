@@ -191,7 +191,7 @@ window.App = (() => {
     text.textContent = `Quote coverage: ${cov.dealsWithProducts} of ${cov.totalDeals} deals have products attached`;
     if (without > 0) text.textContent += ` · ${without} early-stage deal${without !== 1 ? "s" : ""} not yet quoted`;
     fill.style.width  = `${cov.pct}%`;
-    fill.style.background = cov.pct >= 80 ? "#22C55E" : cov.pct >= 50 ? "#F59E0B" : "#0077B5";
+    fill.style.background = cov.pct >= 80 ? "#22C55E" : cov.pct >= 50 ? "#F59E0B" : "#2563EB";
     pct.textContent   = `${cov.pct}%`;
   }
 

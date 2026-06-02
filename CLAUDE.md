@@ -1,4 +1,4 @@
-# QuantHub · Product Analytics — CLAUDE.md
+# Dark Yeti · Product Analytics — CLAUDE.md
 
 Project context for Claude Code. Read this at the start of every session.
 
@@ -41,7 +41,7 @@ Jakob is a collaborator — he has push access to this repo and Worker Admin on 
 | Hosting | Cloudflare Worker (serves `public/` via Wrangler `[assets]`) |
 | API + auth | Same Cloudflare Worker (`quanthub-products`) |
 | Data source | HubSpot CRM v3/v4 API via Private App token |
-| Styling | Light theme, QuantHub brand color `#0077B5`, font Manrope + DM Mono |
+| Styling | Light theme, Dark Yeti brand color `#2563EB`, font Manrope + DM Mono |
 
 ---
 
@@ -158,7 +158,7 @@ npx wrangler deploy --env dev # deploys public/ + worker to dev
 - All components expose: `render(data)`, `renderLoading()`, `renderError(msg)`
 - `app.js` is the orchestrator — it calls `HubSpot.fetchSummary()` and passes data to all components
 - Money formatting: use `window.CONFIG.fmtMoney(n)` — outputs `$1.2M`, `$63K`, `$450`
-- Colors: CW Revenue = `#0077B5` (brand blue), Pipeline = `#0EA5E9` (light blue)
+- Colors: CW Revenue = `#2563EB` (brand blue), Pipeline = `#0EA5E9` (light blue)
 - Tooltips: `.info-tip` with `data-tip="..."` — CSS-only, no JS
 - Skeleton loading: `.skeleton-block` divs while data loads
 

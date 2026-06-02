@@ -5,7 +5,7 @@
 window.RepMatrix = (() => {
 
   const REP_COLORS = {
-    "Joe DeRario":   "#0077B5",
+    "Joe DeRario":   "#2563EB",
     "Jason Rupert":  "#22C55E",
     "Jakob Krause":  "#F59E0B",
   };
