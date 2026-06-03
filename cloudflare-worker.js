@@ -70,7 +70,7 @@ export default {
 
       // ── Authed: data API (existing routes) ────────────────────────
       if (path === "/health") {
-        return json({ ok: true, worker: "quanthub-products", ts: Date.now() });
+        return json({ ok: true, worker: "dark-yeti-products", ts: Date.now() });
       }
 
       if (path === "/products/catalog" && method === "GET") {

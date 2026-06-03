@@ -1,4 +1,4 @@
-name = "quanthub-products"
+name = "dark-yeti-products"
 main = "cloudflare-worker.js"
 compatibility_date = "2024-01-01"
 account_id = "20e7b178f91a4ca92328922dd22abdf2"
@@ -22,7 +22,7 @@ not_found_handling = "404-page"
 #   npx wrangler secret put PORTAL_PASSWORD --env dev
 
 [env.dev]
-name = "quanthub-products-dev"
+name = "dark-yeti-products-dev"
 
 [env.dev.assets]
 directory = "./public"
